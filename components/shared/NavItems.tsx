@@ -1,43 +1,31 @@
-import { SignedIn, SignedOut, UserButton } from "@clerk/nextjs"
-import Image from "next/image"
-import Link from "next/link"
-import { Button } from "../ui/button"
-import NavItems from "./NavItems"
-import MobileNav from "./MobileNav"
+'use client';
 
-const Header = () => {
+import { headerLinks } from '@/constants'
+import Link from 'next/link'
+import { usePathname } from 'next/navigation'
+import React from 'react'
+
+const NavItems = () => {
+  const pathname = usePathname();
+
   return (
-    <header className="w-full border-b">
-      <div className="wrapper flex items-center justify-between">
-        <Link href="/" className="w-36">
-          <Image 
-            src="/assets/images/logo.svg" width={128} height={38}
-            alt="Evently logo" 
-          />
-        </Link>
-
-        <SignedIn>
-          <nav className="md:flex-between hidden w-full max-w-xs">
-            <NavItems />
-          </nav>
-        </SignedIn>
-
-        <div className="flex w-32 justify-end gap-3">
-          <SignedIn>
-            <UserButton afterSignOutUrl="/" />
-            <MobileNav />
-          </SignedIn>
-          <SignedOut>
-            <Button asChild className="rounded-full" size="lg">
-              <Link href="/sign-in">
-                Login
-              </Link>
-            </Button>
-          </SignedOut>
-        </div>
-      </div>
-    </header>
+    <ul className="md:flex-between flex w-full flex-col items-start gap-5 md:flex-row">
+      {headerLinks.map((link) => {
+        const isActive = pathname === link.route;
+        
+        return (
+          <li
+            key={link.route}
+            className={`${
+              isActive && 'text-primary-500'
+            } flex-center p-medium-16 whitespace-nowrap`}
+          >
+            <Link href={link.route}>{link.label}</Link>
+          </li>
+        )
+      })}
+    </ul>
   )
 }
 
-export default Header
+export default NavItems
